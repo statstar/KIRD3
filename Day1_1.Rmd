@@ -1,0 +1,312 @@
+---
+title: "2021 경제인문사회연구회 맞춤형"
+output: 
+  html_document: 
+    highlight: textmate
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+---
+
+## 강의 소개
+  
+ R 데이터 통계분석 심화과정 
+ 
+ 강의기간 : 2021.11.10. ~ 2021.11.12.
+
+ 주요 강의 내용 
+ 
+> R 기초 
+>
+> dplyr 패키지를 이용한 자료 핸들링
+>
+> 기초 통계분석(t검정, 분산분석, 교차분석)
+>
+> 중급 통계분석(상관분석, 회귀분석)
+>
+> 분류모형 (로지스틱 회귀분석, 의사결정나무, 랜덤포레스트 등)
+>
+> 실제 데이터를 활용한 분석 실습
+
+## 들어가기
+
+통계분석(또는 데이터과학)의 프로그래밍은 일반적으로 다음 과정으로 진행된다. 
+
+![](https://d33wubrfki0l68.cloudfront.net/571b056757d68e6df81a3e3853f54d3c76ad6efc/32d37/diagrams/data-science.png)
+
+1. Import : 자료 불러오기 (여러 유형의 자료 file, database, web API 등)
+
+    만약 자료를 불러오지 못한다면, 더이상 통계분석을 할 수 없습니다. 
+    
+2. Tidy : 자료 정리하기 
+    
+    Import로 가져온 자료를 확인 (변수명, 자료의 수, 등)
+    head, tail, dim, str, View, summary 등의 함수를 통해 확인 
+
+3. Transform : 자료 변환
+
+    필요한 변수와 자료 선택, 표준화 등 불러온 raw data를 분석하기 쉽게 재정리
+    
+4. Visualise :  시각화
+    
+    통계 분석 전 결과가 어떻게 나올 것인지 탐색하는 단계
+    
+5. Model : 통계분석
+
+    통계적 가설을 세우고 통계적 가설검정 
+    
+6. Communicate : 소통하기
+
+    R을 통해 분석한 결과를 보고서 또는 시각화하여 의사결정에 활용
+    
+1부터 6까지를 한꺼번에 R을 통해 처리할 수 있고 그 과정이 programming 됩니다. 
+
+## R 기초 : 벡터(vector)
+
+R 의 기본 연산단위는 벡터이며, `x <- c(1, 2, 3)` 은 1,2,3 으로 이루어진 길이 3인 벡터를 x 에 저장한다. 대입연산자는 `=` 와 `<-` 둘 다 가능하지만 함수의 인자로도 쓰이는 `=` 와 구별하기 위해 `<-` 를 권장한다.
+
+```{r}
+math <- c(70,80,90,80,60)
+eng <- c(80,85,90,85,95)
+math+eng 
+math*eng
+math %/% 10
+math %/% 10
+sqrt(math)
+sum(math)
+diff(math)
+mean(math)
+var(math)
+sd(math)
+median(math)
+range(math)
+IQR(math)
+max(math)
+which.min(math)
+length(math)
+```
+
+벡터에서 특정 항목을 골라내기 위해선 `중괄호[]`를 이용하여 **위치** 혹은 **조건문**을 주면 된다.
+
+```{r}
+math[2]
+math[-2]
+math[2:4]
+math[c(1,5,3)]
+math>75
+math[math>75]
+math[math %in% c(80, 90)]
+```
+
+## R 기초 : 조건문(for, if, ifelse)
+
+### if  조건문
+
+>if (test_expression) { 
+> 
+>statement 
+>
+>} 
+
+```{r}
+for(values in 1:10)
+{if (values <= 10)                                
+print(paste(values, "is less than or equal to 10"))
+}
+
+for(values in 1:10)
+{if (values <= 5)                                
+print(paste(values, "is less than or equal to 5")) 
+}
+```
+
+* 한줄로 표현된 경우 {}을 생략해도 괜찮습니다.
+
+### if-else 조건문
+
+* else는 앞의 if문이 참이 아닐때 실행됩니다.
+
+> if (test_expression) { 
+>
+> statement 
+>
+> } else { 
+>
+> statement 
+>
+> } 
+
+```{r}
+x <- -4
+if(x > 0) # 조건을 만족하지 않으므로 else문이 실행됩니다.
+  { print("양수입니다.")
+} else { 
+  print("양수가 아닙니다.")
+}
+```
+
+아래와 같이 사용하면 오류가 발생하고 실행되지 않습니다.
+
+```{r eval=F}
+x <- -4
+if(x > 0) # 조건을 만족하지 않으므로 아래의 문장이 실행되지 않습니다.
+  print("양수입니다.")
+ } else 
+   {print("양수가 아닙니다.")}
+```
+
+하지만 아래와 같이 else 다음에 한줄로 된 코드를 입력하면 문제 없이 실행됩니다. 
+
+```{r}
+x <- -4
+if(x > 0) # 조건을 만족하지 않으므로 아래의 문장이 실행되지 않습니다.
+ { print("양수입니다.")
+ } else print("양수가 아닙니다.")
+```
+
+### if 문에서 else if로 여러 조건을 줄 수 있습니다.
+
+> if ( test_expression1) {
+>
+> statement1
+>
+> } else if ( test_expression2) {
+>
+> statement2
+> } else if ( test_expression3) {
+>
+> statement3
+>
+> } else {
+>
+> statement4
+>
+> }
+
+```{r}
+x <- 0
+if (x < 0) {
+print("Negative number")
+} else if (x > 0) {
+print("Positive number")
+} else
+print("Zero")
+```
+
+### for 반복문
+
+> values <- c(1,7,5,3,9) 
+>
+> for(id in 1:5){  
+>
+> print(values[id]) 
+>
+> } 
+
+### if와 for문을 이용한 예제
+
+Q1. if와 for를 이용하여 50부터 100까지 6의 배수의 합을 구하여라. 
+```{r}
+sum=0
+for(i in 50:100){
+if(i %% 6==0) sum=sum+i
+}
+print(sum)
+```
+
+Q2. 2,5,3,9,8,11,6에서 짝수의 갯 수를 if와 for 문으로 구하여라.
+```{r}
+x <- c(2,5,3,9,8,11,6)
+count <- 0
+for (val in x) {
+if(val %% 2 == 0)  count = count+1
+}
+print(count)
+```
+
+연습 : 10!을 계산하세요.
+
+```{r echo=FALSE} 
+x <- 1:10
+count <- 1
+for (val in x) {
+count = count*val
+}
+print(count)
+```
+
+## 데이터 불러오기(Import)
+
+이제 실제 자료를 읽고 확인하는 방법입니다. 
+
+자료를 불러오기 전에 미리 작업폴더를 R에서 지정하면 그 다음부터 편하게 작업하실 수 있습니다.
+
+getwd()함수를 사용하면 현재 작업중인 폴더를 확인할 수 있습니다.
+
+```{r}
+getwd()
+```
+
+setwd()함수를 사용하면 원하는 위치로 작업폴더를 설정할 수 있어 자료를 쉽게 불러올 수 있습니다.
+
+```{r}
+setwd("c:/")
+getwd()
+```
+
+여기서 주의해야할 부분은 폴더구분을 `/` 또는 '\\'로 해야합니다.
+R은 유닉스 기반으로 구축되어 윈도우에서 사용하는 `\`를 위치로 인식하지 못하기 때문입니다.
+
+R의 데이터는 가급적이면 `csv`로 만들어서 불러오는게 편합니다. csv(comma seperated variables) 용량이 작고 어떤 소프트웨어에서도 쉽게 사용할 수 있기 때문입니다. 한글이 포함된 엑셀, SPSS, SAS파일를 R에서 불러올 경우 **encoding 에러**가 발생할 수 있으니 주의가 필요합니다.
+
+```{r}
+ex <- read.csv("C:/Users/stats/Documents/R 중급강좌 (통계교육원)/Day1/diet.csv")
+head(ex)
+```
+
+엑셀파일은 ***readxl*** 팩키지 그리고 SAS나 SPSS는 ***foreign*** 혹은 ***haven*** 패키지를 이용하면 불러오고 저장할 수 있다.
+
+```{r}
+library(readxl)
+
+ex_excel <- read_excel("C:/Users/stats/Documents/R 중급강좌 (통계교육원)/Day1/diet.xlsx")
+
+library(haven)
+# write_sas(ex, "example.sas7bdat")
+# write_sav(ex, "example.sav")
+
+# ex_sas <-  read_sas("example.sas7bdat")                 
+# ex.spss <- read_sav("example.sav")    
+```
+
+
+## 데이터 확인 (Tidy)
+
+데이터를 import 한 후에는 데이터가 잘 불러와졌는지 **꼭** 확인해야합니다.
+
+```{r}
+head(ex)
+tail(ex)
+head(ex,10)
+str(ex)
+names(ex)
+dim(ex)
+ncol(ex)
+nrow(ex)
+summary(ex)
+```
+
+데이터의 열에 해당하는 변수는 특수문자 `$`를 이용하여 확인할 수 있습니다. 
+
+혹은 `중괄호[]`를 이용해서도 확인하실 수 있습니다. 
+
+두개 이상의 변수를 한번에 선택하기 위해선 c()함수를 이용하면 됩니다.
+
+
+```{r}
+ex$gender
+ex[,2]
+ex[,c(1,4,6)]
+ex[1:5,c(1,4,6)]
+```
